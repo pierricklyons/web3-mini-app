@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { ethers } from "ethers";
+import { Button } from "./components/Button";
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {
+	const [address, setAddress] = useState<string | null>(null);
+	const [balance, setBalance] = useState<string | null>(null);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+	const connectWallet = async () => {
+		if (!window.ethereum) {
+			console.error("No wallet detected.");
+			return;
+		}
 
-export default App
+		try {
+			const provider = new ethers.BrowserProvider(window.ethereum);
+
+			const accounts: string[] = await provider.send("eth_requestAccounts", []);
+			const selectedAccount = accounts[0];
+			setAddress(selectedAccount);
+
+			const balance = await provider.getBalance(selectedAccount);
+			setBalance(ethers.formatEther(balance));
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	return (
+		<div className="flex h-full w-full flex-col items-center justify-center">
+			<div className="flex h-full w-full max-w-3xl flex-col gap-3 p-5">
+				<div className="text-3xl">Mini Web3 App</div>
+				<div className="flex h-full w-full flex-col">
+					{address ? (
+						<div>
+							<p>Address: {address}</p>
+							<p>Balance: {balance} ETH</p>
+						</div>
+					) : (
+						<Button onClick={connectWallet}>Connect Wallet</Button>
+					)}
+				</div>
+			</div>
+		</div>
+	);
+};
