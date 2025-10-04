@@ -1,22 +1,32 @@
-import clsx from "clsx";
 import type { ReactNode } from "react";
+import clsx from "clsx";
 
 interface ButtonProps {
 	className?: string;
 	children?: ReactNode;
+	disabled?: boolean;
+	color?: "default" | "red" | "green";
 	onClick?: () => void;
 }
 
 export const Button = (props: ButtonProps) => {
-	const { className, children, onClick } = props;
+	const { className, children, disabled = false, color = "default", onClick } = props;
+
+	const colorClasses: Record<string, string> = {
+		default: "bg-gray-700 text-white hover:bg-gray-600",
+		red: "bg-red-500 text-white hover:bg-red-400 ",
+		green: "bg-green-500 text-white hover:bg-green-400 ",
+	};
 
 	return (
 		<button
 			className={clsx(
-				className,
-				"w-fit rounded bg-gray-800 px-3 py-1 text-lg text-white hover:cursor-pointer",
-				"hover:cursor-pointer hover:bg-gray-600"
+				"w-fit rounded px-3 py-1 text-lg",
+				colorClasses[color],
+				"hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+				className
 			)}
+			disabled={disabled}
 			onClick={onClick}
 		>
 			{children}
