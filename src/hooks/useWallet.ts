@@ -4,10 +4,10 @@ import { useState, useCallback } from "react";
 import { ethers, Network } from "ethers";
 
 export const useWallet = () => {
-	const [address, setAddress] = useState<string | null>(null);
+	const [account, setAccount] = useState<string | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
 	const [walletName, setWalletName] = useState<string | null>(null);
-	const [network, setNetwork] = useState<Network | null>(null);
+	const [chain, setChain] = useState<Network | null>(null);
 
 	const connectWallet = useCallback(async () => {
 		if (!window.ethereum) {
@@ -18,47 +18,47 @@ export const useWallet = () => {
 		try {
 			const provider = new ethers.BrowserProvider(window.ethereum);
 			const accounts: string[] = await provider.send("eth_requestAccounts", []);
-			const selectedAccount = accounts[0];
-			setAddress(selectedAccount);
+			const account = accounts[0];
+			setAccount(account);
 
-			const balance = await provider.getBalance(selectedAccount);
+			const balance = await provider.getBalance(account);
 			setBalance(`${ethers.formatEther(balance)} ETH`);
 
-			const wallet = detectWallet();
-			setWalletName(wallet);
+			const walletName = detectWalletName();
+			setWalletName(walletName);
 
-			const network = await provider.getNetwork();
-			setNetwork(network);
+			const chain = await provider.getNetwork();
+			setChain(chain);
 		} catch (err) {
 			console.error(err);
 		}
 	}, []);
 
 	const resetWallet = useCallback(() => {
-		setAddress(null);
+		setAccount(null);
 		setBalance(null);
 		setWalletName(null);
-		setNetwork(null);
+		setChain(null);
 	}, []);
 
-	const detectWallet = () => {
+	const detectWalletName = (): string => {
 		const ethereum = window.ethereum;
 
 		if (!ethereum) return "No Wallet";
 
-		if ((ethereum as any).isMetaMask) return "MetaMask";
-		if ((ethereum as any).isCoinbaseWallet) return "Coinbase Wallet";
-		if ((ethereum as any).isBraveWallet) return "Brave Wallet";
-		if ((ethereum as any).isPhantom) return "Phantom";
+		if (ethereum.isMetaMask) return "MetaMask";
+		if (ethereum.isCoinbaseWallet) return "Coinbase Wallet";
+		if (ethereum.isBraveWallet) return "Brave Wallet";
+		if (ethereum.isPhantom) return "Phantom";
 
 		return "Unknown Wallet";
 	};
 
 	return {
-		address,
+		account,
 		balance,
 		walletName,
-		network,
+		chain,
 		connectWallet,
 		resetWallet,
 	};

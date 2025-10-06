@@ -6,41 +6,41 @@ import { Tooltip } from "@/components/Tooltip";
 import { shortenAddress } from "@/utils/shortenAddress";
 
 export const WalletPanel = () => {
-	const { address, balance, walletName, network } = useWalletContext();
+	const { account, balance, walletName, chain } = useWalletContext();
 
 	const [copied, setCopied] = useState(false);
 
 	const copyAddress = async () => {
-		if (!address) return;
-		await navigator.clipboard.writeText(address);
+		if (!account) return;
+		await navigator.clipboard.writeText(account);
 		setCopied(true);
 	};
 
 	return (
 		<div className="flex flex-col gap-4 rounded bg-neutral-700 p-4 shadow">
 			<p>
-				<span className="font-semibold">Wallet:</span> {address ? (walletName ?? "-") : "-"}
+				<span className="font-semibold">Wallet:</span> {account ? (walletName ?? "-") : "-"}
 			</p>
 			<p>
 				<span className="font-semibold">Account:</span>{" "}
-				{address ? (
+				{account ? (
 					<Tooltip
 						text={copied ? "Copied!" : "Copy full address"}
 						onClick={copyAddress}
 						onMouseLeave={() => setCopied(false)}
 					>
-						{shortenAddress(address)}
+						{shortenAddress(account)}
 					</Tooltip>
 				) : (
 					"-"
 				)}
 			</p>
 			<p>
-				<span className="font-semibold">Balance:</span> {address ? (balance ?? "-") : "-"}
+				<span className="font-semibold">Balance:</span> {account ? (balance ?? "-") : "-"}
 			</p>
 			<p>
 				<span className="font-semibold">Network:</span>{" "}
-				{address ? `${network?.name ?? "-"} (${network?.chainId ?? "-"})` : "-"}
+				{account ? `${chain?.name ?? "-"} (${chain?.chainId ?? "-"})` : "-"}
 			</p>
 		</div>
 	);
