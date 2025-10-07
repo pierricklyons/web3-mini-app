@@ -24,9 +24,9 @@ export const TransactionPanel = () => {
 			setStatus(`Transaction confirmed! Hash: ${txHash}`);
 			setRecipientAcount("");
 			setAmount("");
-		} catch (err: any) {
-			setStatus(err.message || "Transaction failed, check console.");
-			console.error(err);
+		} catch (error) {
+			setStatus("Transaction failed, check console.");
+			console.error(error);
 		}
 	};
 
