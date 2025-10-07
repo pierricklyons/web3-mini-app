@@ -10,10 +10,16 @@ interface ButtonProps {
 }
 
 export const Button = (props: ButtonProps) => {
-	const { className, children, disabled = false, color = "default", onClick } = props;
+	const {
+		className,
+		children,
+		disabled = false,
+		color = "default",
+		onClick,
+	} = props;
 
 	const colorClasses: Record<string, string> = {
-		default: "bg-gray-700 text-white hover:bg-gray-600",
+		default: "bg-neutral-600 text-white hover:bg-neutral-500",
 		red: "bg-red-500 text-white hover:bg-red-400 ",
 		green: "bg-green-500 text-white hover:bg-green-400 ",
 	};
@@ -24,7 +30,7 @@ export const Button = (props: ButtonProps) => {
 				"w-fit rounded px-3 py-1 text-lg",
 				colorClasses[color],
 				"hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
-				className
+				className,
 			)}
 			disabled={disabled}
 			onClick={onClick}

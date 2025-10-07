@@ -15,6 +15,9 @@ export const WalletControls = (props: WalletControlsProps) => {
 			<Button onClick={connectWallet} disabled={!!account} color="green">
 				{account ? "Connected" : "Connect"}
 			</Button>
+			{/* <Button onClick={connectWallet} disabled={!account} color="default">
+				{"Refresh"}
+			</Button> */}
 			<Button onClick={resetWallet} disabled={!account} color="red">
 				Reset
 			</Button>

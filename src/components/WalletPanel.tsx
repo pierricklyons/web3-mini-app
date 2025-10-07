@@ -17,9 +17,10 @@ export const WalletPanel = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-4 rounded bg-neutral-700 p-4 shadow">
+		<div className="flex flex-col gap-4 rounded bg-neutral-700 p-6 shadow">
 			<p>
-				<span className="font-semibold">Wallet:</span> {account ? (walletName ?? "-") : "-"}
+				<span className="font-semibold">Wallet:</span>{" "}
+				{account ? (walletName ?? "-") : "-"}
 			</p>
 			<p>
 				<span className="font-semibold">Account:</span>{" "}
@@ -36,11 +37,14 @@ export const WalletPanel = () => {
 				)}
 			</p>
 			<p>
-				<span className="font-semibold">Balance:</span> {account ? (balance ?? "-") : "-"}
+				<span className="font-semibold">Balance:</span>{" "}
+				{account ? (balance ?? "-") : "-"}
 			</p>
 			<p>
 				<span className="font-semibold">Network:</span>{" "}
-				{account ? `${chain?.name ?? "-"} (${chain?.chainId ?? "-"})` : "-"}
+				{account
+					? `${chain?.name ?? "-"} (${chain?.chainId ?? "-"})`
+					: "-"}
 			</p>
 		</div>
 	);

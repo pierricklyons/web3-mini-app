@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { ethers, Network } from "ethers";
+import { BrowserProvider, ethers, JsonRpcSigner, Network } from "ethers";
 
 export const useWallet = () => {
+	const [provider, setProvider] = useState<BrowserProvider | null>(null);
 	const [account, setAccount] = useState<string | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
 	const [walletName, setWalletName] = useState<string | null>(null);
 	const [chain, setChain] = useState<Network | null>(null);
+	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
 	const connectWallet = useCallback(async () => {
 		if (!window.ethereum) {
@@ -17,7 +19,12 @@ export const useWallet = () => {
 
 		try {
 			const provider = new ethers.BrowserProvider(window.ethereum);
-			const accounts: string[] = await provider.send("eth_requestAccounts", []);
+			setProvider(provider);
+
+			const accounts: string[] = await provider.send(
+				"eth_requestAccounts",
+				[],
+			);
 			const account = accounts[0];
 			setAccount(account);
 
@@ -29,6 +36,9 @@ export const useWallet = () => {
 
 			const chain = await provider.getNetwork();
 			setChain(chain);
+
+			const signer = await provider.getSigner();
+			setSigner(signer);
 		} catch (err) {
 			console.error(err);
 		}
@@ -55,10 +65,12 @@ export const useWallet = () => {
 	};
 
 	return {
+		provider,
 		account,
 		balance,
 		walletName,
 		chain,
+		signer,
 		connectWallet,
 		resetWallet,
 	};
