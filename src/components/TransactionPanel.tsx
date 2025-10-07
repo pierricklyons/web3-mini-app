@@ -43,34 +43,32 @@ export const TransactionPanel = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-4 rounded bg-neutral-700 p-6 shadow">
+		<>
 			<input
-				className="rounded bg-neutral-600 p-3 text-white"
+				className="rounded bg-neutral-600 p-3 text-white focus:outline-none"
 				type="text"
-				placeholder="Receiver address"
+				placeholder="Recipient address"
 				value={recipientAccount}
 				onChange={(e) => setRecipientAcount(e.target.value)}
 			/>
-
 			<input
-				className="rounded bg-neutral-600 p-3 text-white"
+				className="rounded bg-neutral-600 p-3 text-white focus:outline-none"
 				type="text"
 				placeholder="Amount (ETH)"
 				value={amount}
 				onChange={(e) => setAmount(e.target.value)}
 			/>
-
 			<Button
 				className="self-center"
 				onClick={sendETH}
 				disabled={!account || !amount}
+				color="yellow"
 			>
 				Send
 			</Button>
-
 			<p>
 				<span className="font-semibold">Status:</span> {status}
 			</p>
-		</div>
+		</>
 	);
 };

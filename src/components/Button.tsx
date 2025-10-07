@@ -5,7 +5,7 @@ interface ButtonProps {
 	className?: string;
 	children?: ReactNode;
 	disabled?: boolean;
-	color?: "default" | "red" | "green";
+	color?: "default" | "red" | "green" | "yellow";
 	onClick?: () => void;
 }
 
@@ -18,10 +18,11 @@ export const Button = (props: ButtonProps) => {
 		onClick,
 	} = props;
 
-	const colorClasses: Record<string, string> = {
+	const colorClasses = {
 		default: "bg-neutral-600 text-white hover:bg-neutral-500",
-		red: "bg-red-500 text-white hover:bg-red-400 ",
-		green: "bg-green-500 text-white hover:bg-green-400 ",
+		red: "bg-red-500 text-white hover:bg-red-400",
+		green: "bg-green-500 text-white hover:bg-green-400",
+		yellow: "bg-yellow-500 text-white hover:bg-yellow-400",
 	};
 
 	return (

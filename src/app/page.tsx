@@ -1,3 +1,5 @@
+import { DashboardTabs } from "@/components/DashboardTabs";
+import { TokenPanel } from "@/components/Tokenpanel";
 import { TransactionPanel } from "@/components/TransactionPanel";
 import { WalletControls } from "@/components/WalletControls";
 import { WalletPanel } from "@/components/WalletPanel";
@@ -9,9 +11,12 @@ const Page = () => {
 				<header className="text-center text-3xl font-bold">
 					Web3 Mini App
 				</header>
-				<WalletControls />
+				{/* <WalletControls />
 				<WalletPanel />
 				<TransactionPanel />
+				<TokenPanel /> */}
+				<WalletControls />
+				<DashboardTabs />
 			</div>
 		</div>
 	);

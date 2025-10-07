@@ -17,7 +17,7 @@ export const WalletPanel = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-4 rounded bg-neutral-700 p-6 shadow">
+		<>
 			<p>
 				<span className="font-semibold">Wallet:</span>{" "}
 				{account ? (walletName ?? "-") : "-"}
@@ -46,6 +46,6 @@ export const WalletPanel = () => {
 					? `${chain?.name ?? "-"} (${chain?.chainId ?? "-"})`
 					: "-"}
 			</p>
-		</div>
+		</>
 	);
 };

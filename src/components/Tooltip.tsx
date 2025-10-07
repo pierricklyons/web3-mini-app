@@ -11,11 +11,15 @@ interface TooltipProps {
 }
 
 export const Tooltip = (props: TooltipProps) => {
-	const { children, text, className, onClick, onMouseEnter, onMouseLeave } = props;
+	const { children, text, className, onClick, onMouseEnter, onMouseLeave } =
+		props;
 
 	return (
 		<span
-			className={clsx("group relative inline-block cursor-pointer underline", className)}
+			className={clsx(
+				"group relative inline-block cursor-pointer underline",
+				className,
+			)}
 			onClick={onClick}
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
@@ -24,7 +28,7 @@ export const Tooltip = (props: TooltipProps) => {
 			<span
 				className={clsx(
 					"absolute bottom-full left-1/2 -translate-x-1/2 rounded bg-neutral-600 px-2 py-1 text-xs whitespace-nowrap opacity-0",
-					"group-hover:opacity-100"
+					"group-hover:opacity-100",
 				)}
 			>
 				{text}

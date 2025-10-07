@@ -2,11 +2,31 @@
 
 import { useState, useCallback } from "react";
 import { BrowserProvider, ethers, JsonRpcSigner, Network } from "ethers";
+import { getAllTokenBalances } from "@/utils/getAllTokenBalances";
+
+export const TOKENS = [
+	{
+		address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+		symbol: "DAI",
+		decimals: 18,
+	},
+	{
+		address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+		symbol: "USDC",
+		decimals: 6,
+	},
+	{
+		address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+		symbol: "USDT",
+		decimals: 6,
+	},
+];
 
 export const useWallet = () => {
 	const [provider, setProvider] = useState<BrowserProvider | null>(null);
 	const [account, setAccount] = useState<string | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
+	const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
 	const [walletName, setWalletName] = useState<string | null>(null);
 	const [chain, setChain] = useState<Network | null>(null);
 	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
@@ -39,19 +59,26 @@ export const useWallet = () => {
 
 			const signer = await provider.getSigner();
 			setSigner(signer);
+
+			const tokenBalances = await getAllTokenBalances(
+				provider,
+				account,
+				TOKENS,
+			);
+			setTokenBalances(tokenBalances);
 		} catch (err) {
 			console.error(err);
 		}
 	}, []);
 
-	const resetWallet = useCallback(() => {
+	const resetWallet = () => {
 		setAccount(null);
 		setBalance(null);
 		setWalletName(null);
 		setChain(null);
-	}, []);
+	};
 
-	const detectWalletName = (): string => {
+	const detectWalletName = () => {
 		const ethereum = window.ethereum;
 
 		if (!ethereum) return "No Wallet";
@@ -68,6 +95,7 @@ export const useWallet = () => {
 		provider,
 		account,
 		balance,
+		tokenBalances,
 		walletName,
 		chain,
 		signer,
