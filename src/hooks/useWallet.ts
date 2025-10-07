@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BrowserProvider, formatEther, JsonRpcSigner, Network } from "ethers";
 import { getAllTokenBalances } from "@/utils/getAllTokenBalances";
 

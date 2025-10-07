@@ -1,4 +1,4 @@
-import { ethers, Contract, Provider, Signer, formatUnits } from "ethers";
+import { Contract, Provider, Signer, formatUnits } from "ethers";
 
 const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
 

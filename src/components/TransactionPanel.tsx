@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ethers } from "ethers";
 import { useWalletContext } from "@/context/WalletContext";
 import { Button } from "./Button";
 import { sendEth } from "@/utils/sendEth";
 
 export const TransactionPanel = () => {
-	const { provider, account, signer } = useWalletContext();
+	const { account, signer } = useWalletContext();
 	const [recipientAccount, setRecipientAcount] = useState<string>("");
 	const [amount, setAmount] = useState<string>("");
 	const [status, setStatus] = useState<string>("");
