@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ethers } from "ethers";
 import { useWalletContext } from "@/context/WalletContext";
 import { Button } from "./Button";
+import { sendEth } from "@/utils/sendEth";
 
 export const TransactionPanel = () => {
 	const { provider, account, signer } = useWalletContext();
@@ -11,34 +12,22 @@ export const TransactionPanel = () => {
 	const [amount, setAmount] = useState<string>("");
 	const [status, setStatus] = useState<string>("");
 
-	const sendETH = async () => {
-		if (!provider || !account || !signer) {
+	const handleSend = async () => {
+		if (!account || !signer) {
 			setStatus("Please connect your wallet first.");
 			return;
 		}
 
-		if (!ethers.isAddress(recipientAccount)) {
-			setStatus("Invalid receiver address.");
-			return;
-		}
-
-		if (!amount || isNaN(Number(amount))) {
-			setStatus("Enter a valid amount.");
-			return;
-		}
+		setStatus("Sending...");
 
 		try {
-			const tx = await signer.sendTransaction({
-				to: recipientAccount,
-				value: ethers.parseEther(amount),
-			});
-			setStatus("Transaction sent!");
-			await tx.wait();
-			setStatus("Transaction confirmed!");
-			(setAmount(""), setRecipientAcount(""));
-		} catch (error: unknown) {
-			console.error(error);
-			setStatus("Transaction failed, check console.");
+			const txHash = await sendEth(signer, recipientAccount, amount);
+			setStatus(`Transaction confirmed! Hash: ${txHash}`);
+			setRecipientAcount("");
+			setAmount("");
+		} catch (err: any) {
+			setStatus(err.message || "Transaction failed, check console.");
+			console.error(err);
 		}
 	};
 
@@ -60,7 +49,7 @@ export const TransactionPanel = () => {
 			/>
 			<Button
 				className="self-center"
-				onClick={sendETH}
+				onClick={handleSend}
 				disabled={!account || !amount}
 				color="yellow"
 			>

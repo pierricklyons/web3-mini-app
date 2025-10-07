@@ -1,20 +1,16 @@
-import { ethers, Provider, Signer } from "ethers";
+import { ethers, Contract, Provider, Signer, formatUnits } from "ethers";
 
 const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
 
 export const getTokenBalance = async (
 	provider: Provider | Signer,
-	token: TokenInfo,
 	userAddress: string,
+	token: TokenInfo,
 ) => {
 	try {
-		const contract = new ethers.Contract(
-			token.address,
-			ERC20_ABI,
-			provider,
-		);
+		const contract = new Contract(token.address, ERC20_ABI, provider);
 		const rawBalance = await contract.balanceOf(userAddress);
-		const formatted = ethers.formatUnits(rawBalance, token.decimals);
+		const formatted = formatUnits(rawBalance, token.decimals);
 		return { symbol: token.symbol, balance: formatted };
 	} catch (err) {
 		console.error(`Failed to fetch ${token.symbol} balance:`, err);
@@ -28,7 +24,7 @@ export const getAllTokenBalances = async (
 	tokens: TokenInfo[],
 ) => {
 	const balances = await Promise.all(
-		tokens.map((token) => getTokenBalance(provider, token, userAddress)),
+		tokens.map((token) => getTokenBalance(provider, userAddress, token)),
 	);
 	return balances;
 };

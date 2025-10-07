@@ -10,7 +10,7 @@ import clsx from "clsx";
 const TABS = ["wallet", "transaction", "tokens"];
 
 export const DashboardTabs = () => {
-	const [activeTab, setActiveTab] = useState<string>("wallet");
+	const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("wallet");
 
 	interface TabProps {
 		children?: ReactNode;

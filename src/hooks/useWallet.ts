@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { BrowserProvider, ethers, JsonRpcSigner, Network } from "ethers";
+import { useEffect, useState } from "react";
+import { BrowserProvider, formatEther, JsonRpcSigner, Network } from "ethers";
 import { getAllTokenBalances } from "@/utils/getAllTokenBalances";
 
-export const TOKENS = [
+const TEST_TOKENS = [
 	{
 		address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
 		symbol: "DAI",
@@ -31,14 +31,14 @@ export const useWallet = () => {
 	const [chain, setChain] = useState<Network | null>(null);
 	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
-	const connectWallet = useCallback(async () => {
+	const connectWallet = async () => {
 		if (!window.ethereum) {
 			console.error("No wallet detected");
 			return;
 		}
 
 		try {
-			const provider = new ethers.BrowserProvider(window.ethereum);
+			const provider = new BrowserProvider(window.ethereum, "any");
 			setProvider(provider);
 
 			const accounts: string[] = await provider.send(
@@ -49,7 +49,7 @@ export const useWallet = () => {
 			setAccount(account);
 
 			const balance = await provider.getBalance(account);
-			setBalance(`${ethers.formatEther(balance)} ETH`);
+			setBalance(`${formatEther(balance)} ETH`);
 
 			const walletName = detectWalletName();
 			setWalletName(walletName);
@@ -63,13 +63,13 @@ export const useWallet = () => {
 			const tokenBalances = await getAllTokenBalances(
 				provider,
 				account,
-				TOKENS,
+				TEST_TOKENS,
 			);
 			setTokenBalances(tokenBalances);
-		} catch (err) {
-			console.error(err);
+		} catch (error) {
+			console.error(error);
 		}
-	}, []);
+	};
 
 	const resetWallet = () => {
 		setAccount(null);
