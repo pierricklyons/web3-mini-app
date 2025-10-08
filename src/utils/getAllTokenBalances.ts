@@ -11,9 +11,11 @@ export const getTokenBalance = async (
 		const contract = new Contract(token.address, ERC20_ABI, provider);
 		const rawBalance = await contract.balanceOf(userAddress);
 		const formatted = formatUnits(rawBalance, token.decimals);
+
 		return { symbol: token.symbol, balance: formatted };
-	} catch (err) {
-		console.error(`Failed to fetch ${token.symbol} balance:`, err);
+	} catch (error) {
+		console.error(error);
+
 		return { symbol: token.symbol, balance: "0" };
 	}
 };
@@ -26,5 +28,6 @@ export const getAllTokenBalances = async (
 	const balances = await Promise.all(
 		tokens.map((token) => getTokenBalance(provider, userAddress, token)),
 	);
+
 	return balances;
 };

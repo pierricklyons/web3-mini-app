@@ -13,19 +13,23 @@ export const TransactionPanel = () => {
 
 	const handleSend = async () => {
 		if (!account || !signer) {
-			setStatus("Please connect your wallet first.");
+			setStatus("Please connect a wallet.");
 			return;
 		}
 
 		setStatus("Sending...");
 
 		try {
-			const txHash = await sendEth(signer, recipientAccount, amount);
-			setStatus(`Transaction confirmed! Hash: ${txHash}`);
+			const hash = await sendEth(signer, recipientAccount, amount);
+			setStatus(`Transaction confirmed! Hash: ${hash}`);
 			setRecipientAcount("");
 			setAmount("");
 		} catch (error) {
-			setStatus("Transaction failed, check console.");
+			if (error instanceof Error) {
+				setStatus(error.message);
+			} else {
+				setStatus("Transaction failed.");
+			}
 			console.error(error);
 		}
 	};

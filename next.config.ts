@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-	basePath: "/web3-mini-app",
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

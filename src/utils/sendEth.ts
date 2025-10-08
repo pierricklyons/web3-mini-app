@@ -5,11 +5,11 @@ export const sendEth = async (
 	recipientAddress: string,
 	amount: string,
 ) => {
-	if (!signer) throw new Error("No signer provided");
+	if (!signer) throw new Error("No signer provided!");
 	if (!ethers.isAddress(recipientAddress))
-		throw new Error("Invalid recipient address");
+		throw new Error("Invalid recipient address!");
 	if (!amount || isNaN(Number(amount)) || Number(amount) <= 0)
-		throw new Error("Invalid amount");
+		throw new Error("Invalid amount!");
 
 	const tx = await signer.sendTransaction({
 		to: recipientAddress,
