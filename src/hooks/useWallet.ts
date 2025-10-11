@@ -9,7 +9,7 @@ import {
 	Provider,
 	Signer,
 } from "ethers";
-import { getTokenBalance } from "@/functions/web3/getTokenBalance";
+import { getTokenBalance } from "@/functions/getTokenBalance";
 import { TEST_TOKENS } from "@/constants/tokens";
 
 export const useWallet = () => {

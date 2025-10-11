@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useWalletContext } from "@/context/WalletContext";
 import { Button } from "./Button";
-import { sendEth } from "@/functions/web3/sendEth";
+import { sendEth } from "@/functions/sendEth";
 
 export const TransactionPanel = () => {
 	const { account, signer } = useWalletContext();
