@@ -4,7 +4,7 @@ export const sendEth = async (
 	signer: Signer,
 	recipientAddress: string,
 	amount: string,
-) => {
+): Promise<string> => {
 	if (!signer) throw new Error("No signer provided!");
 	if (!ethers.isAddress(recipientAddress))
 		throw new Error("Invalid recipient address!");

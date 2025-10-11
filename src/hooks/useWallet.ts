@@ -1,37 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import { BrowserProvider, formatEther, JsonRpcSigner, Network } from "ethers";
-import { getAllTokenBalances } from "@/utils/getAllTokenBalances";
-
-const TEST_TOKENS = [
-	{
-		address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-		symbol: "DAI",
-		decimals: 18,
-	},
-	{
-		address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-		symbol: "USDC",
-		decimals: 6,
-	},
-	{
-		address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-		symbol: "USDT",
-		decimals: 6,
-	},
-];
+import {
+	BrowserProvider,
+	formatEther,
+	JsonRpcSigner,
+	Network,
+	Provider,
+	Signer,
+} from "ethers";
+import { getTokenBalance } from "@/functions/web3/getTokenBalance";
+import { TEST_TOKENS } from "@/constants/tokens";
 
 export const useWallet = () => {
 	const [provider, setProvider] = useState<BrowserProvider | null>(null);
+	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 	const [account, setAccount] = useState<string | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
 	const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
 	const [walletName, setWalletName] = useState<string | null>(null);
 	const [chain, setChain] = useState<Network | null>(null);
-	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
-	const connectWallet = async () => {
+	const detectWalletName = (): string => {
+		const ethereum = window.ethereum;
+
+		if (!ethereum) return "No Wallet";
+		if (ethereum.isMetaMask) return "MetaMask";
+		if (ethereum.isCoinbaseWallet) return "Coinbase Wallet";
+		if (ethereum.isBraveWallet) return "Brave Wallet";
+		if (ethereum.isPhantom) return "Phantom";
+
+		return "Unknown Wallet";
+	};
+
+	const getTokenBalances = async (
+		provider: Provider | Signer,
+		userAddress: string,
+		tokens: TokenInfo[],
+	): Promise<TokenBalance[]> => {
+		return Promise.all(
+			tokens.map((token) =>
+				getTokenBalance(provider, userAddress, token),
+			),
+		);
+	};
+
+	const connectWallet = async (): Promise<void> => {
 		if (!window.ethereum) {
 			console.error("No wallet detected");
 			return;
@@ -41,64 +55,49 @@ export const useWallet = () => {
 			const provider = new BrowserProvider(window.ethereum, "any");
 			setProvider(provider);
 
-			const accounts: string[] = await provider.send(
-				"eth_requestAccounts",
-				[],
-			);
-			const account = accounts[0];
+			const [account] = await provider.send("eth_requestAccounts", []);
 			setAccount(account);
 
-			const balance = await provider.getBalance(account);
-			setBalance(`${formatEther(balance)} ETH`);
+			const balanceWei = await provider.getBalance(account);
+			setBalance(`${formatEther(balanceWei)} ETH`);
 
-			const walletName = detectWalletName();
-			setWalletName(walletName);
+			setWalletName(detectWalletName());
 
-			const chain = await provider.getNetwork();
-			setChain(chain);
+			const network = await provider.getNetwork();
+			setChain(network);
 
 			const signer = await provider.getSigner();
 			setSigner(signer);
 
-			const tokenBalances = await getAllTokenBalances(
+			const tokenBalances = await getTokenBalances(
 				provider,
 				account,
 				TEST_TOKENS,
 			);
 			setTokenBalances(tokenBalances);
 		} catch (error) {
-			console.error(error);
+			console.error("Error connecting wallet:", error);
 		}
 	};
 
-	const resetWallet = () => {
+	const resetWallet = (): void => {
 		setAccount(null);
 		setBalance(null);
 		setWalletName(null);
 		setChain(null);
-	};
-
-	const detectWalletName = () => {
-		const ethereum = window.ethereum;
-
-		if (!ethereum) return "No Wallet";
-
-		if (ethereum.isMetaMask) return "MetaMask";
-		if (ethereum.isCoinbaseWallet) return "Coinbase Wallet";
-		if (ethereum.isBraveWallet) return "Brave Wallet";
-		if (ethereum.isPhantom) return "Phantom";
-
-		return "Unknown Wallet";
+		setSigner(null);
+		setProvider(null);
+		setTokenBalances([]);
 	};
 
 	return {
 		provider,
+		signer,
 		account,
 		balance,
 		tokenBalances,
 		walletName,
 		chain,
-		signer,
 		connectWallet,
 		resetWallet,
 	};

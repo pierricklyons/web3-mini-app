@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import { WalletPanel } from "@/components/WalletPanel";
 import { TransactionPanel } from "@/components/TransactionPanel";
 import { TokenPanel } from "@/components/TokenPanel";
-import { capitalize } from "@/utils/capitalize";
+import { capitalizeWord } from "@/functions/capitalizeWord";
 import clsx from "clsx";
 
 const TABS = ["wallet", "transaction", "tokens"];
@@ -46,7 +46,7 @@ export const DashboardTabs = () => {
 						onClick={() => setActiveTab(tab)}
 						key={tab}
 					>
-						{capitalize(tab)}
+						{capitalizeWord(tab)}
 					</Tab>
 				))}
 			</div>

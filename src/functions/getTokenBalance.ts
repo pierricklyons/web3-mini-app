@@ -1,14 +1,13 @@
+import { READ_ERC20_ABI } from "@/constants/abis";
 import { Contract, Provider, Signer, formatUnits } from "ethers";
-
-const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
 
 export const getTokenBalance = async (
 	provider: Provider | Signer,
 	userAddress: string,
 	token: TokenInfo,
-) => {
+): Promise<TokenBalance> => {
 	try {
-		const contract = new Contract(token.address, ERC20_ABI, provider);
+		const contract = new Contract(token.address, READ_ERC20_ABI, provider);
 		const rawBalance = await contract.balanceOf(userAddress);
 		const formatted = formatUnits(rawBalance, token.decimals);
 
@@ -18,16 +17,4 @@ export const getTokenBalance = async (
 
 		return { symbol: token.symbol, balance: "0" };
 	}
-};
-
-export const getAllTokenBalances = async (
-	provider: Provider | Signer,
-	userAddress: string,
-	tokens: TokenInfo[],
-) => {
-	const balances = await Promise.all(
-		tokens.map((token) => getTokenBalance(provider, userAddress, token)),
-	);
-
-	return balances;
 };
