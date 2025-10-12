@@ -12,6 +12,7 @@ import {
 import { getTokenBalance } from "@/utils/getTokenBalance";
 import { TEST_TOKENS } from "@/constants/tokens";
 import { Address, parseAddress } from "@/types/Address";
+import { Token, TokenBalance } from "@/types/Token";
 
 export const useWallet = () => {
 	const [provider, setProvider] = useState<BrowserProvider | null>(null);
@@ -36,7 +37,7 @@ export const useWallet = () => {
 
 	const getTokenBalances = async (
 		provider: Provider | Signer,
-		userAddress: string,
+		userAddress: Address,
 		tokens: Token[],
 	): Promise<TokenBalance[]> => {
 		return Promise.all(

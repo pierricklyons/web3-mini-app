@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useWalletContext } from "@/context/WalletContext";
 import { Button } from "./Button";
 import { sendEth } from "@/utils/sendEth";
-import { Address, parseAddress } from "@/types/Address";
-import { ethers, parseEther } from "ethers";
+import { parseAddress } from "@/types/Address";
+import { parseEther } from "ethers";
 
 export const TransactionPanel = () => {
 	const { account, signer } = useWalletContext();
