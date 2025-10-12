@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import { WalletPanel } from "@/components/WalletPanel";
 import { TransactionPanel } from "@/components/TransactionPanel";
 import { TokenPanel } from "@/components/TokenPanel";
-import { capitalizeWord } from "@/functions/capitalizeWord";
+import { capitalizeWord } from "@/utils/capitalizeWord";
 import clsx from "clsx";
 
 const TABS = ["wallet", "transaction", "tokens"];

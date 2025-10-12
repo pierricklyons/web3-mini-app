@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useWalletContext } from "@/context/WalletContext";
 import { Tooltip } from "@/components/Tooltip";
-import { shortenAddress } from "@/functions/shortenAddress";
+import { shortenAddress } from "@/utils/shortenAddress";
 
 export const WalletPanel = () => {
 	const { account, balance, walletName, chain } = useWalletContext();

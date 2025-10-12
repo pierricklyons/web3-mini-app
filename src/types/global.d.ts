@@ -11,15 +11,4 @@ declare global {
 	interface Window {
 		ethereum?: ExtendedEthereumProvider;
 	}
-
-	type TokenInfo = {
-		address: string;
-		symbol: string;
-		decimals: number;
-	};
-
-	type TokenBalance = {
-		symbol: string;
-		balance: string;
-	};
 }

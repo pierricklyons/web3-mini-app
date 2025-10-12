@@ -9,13 +9,14 @@ import {
 	Provider,
 	Signer,
 } from "ethers";
-import { getTokenBalance } from "@/functions/getTokenBalance";
+import { getTokenBalance } from "@/utils/getTokenBalance";
 import { TEST_TOKENS } from "@/constants/tokens";
+import { Address, parseAddress } from "@/types/Address";
 
 export const useWallet = () => {
 	const [provider, setProvider] = useState<BrowserProvider | null>(null);
 	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
-	const [account, setAccount] = useState<string | null>(null);
+	const [account, setAccount] = useState<Address | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
 	const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
 	const [walletName, setWalletName] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export const useWallet = () => {
 	const getTokenBalances = async (
 		provider: Provider | Signer,
 		userAddress: string,
-		tokens: TokenInfo[],
+		tokens: Token[],
 	): Promise<TokenBalance[]> => {
 		return Promise.all(
 			tokens.map((token) =>
@@ -56,7 +57,7 @@ export const useWallet = () => {
 			setProvider(provider);
 
 			const [account] = await provider.send("eth_requestAccounts", []);
-			setAccount(account);
+			setAccount(parseAddress(account));
 
 			const balanceWei = await provider.getBalance(account);
 			setBalance(`${formatEther(balanceWei)} ETH`);

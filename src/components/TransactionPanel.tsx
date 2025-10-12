@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useWalletContext } from "@/context/WalletContext";
 import { Button } from "./Button";
-import { sendEth } from "@/functions/sendEth";
+import { sendEth } from "@/utils/sendEth";
+import { Address, parseAddress } from "@/types/Address";
+import { ethers, parseEther } from "ethers";
 
 export const TransactionPanel = () => {
 	const { account, signer } = useWalletContext();
@@ -20,7 +22,11 @@ export const TransactionPanel = () => {
 		setStatus("Sending...");
 
 		try {
-			const hash = await sendEth(signer, recipientAccount, amount);
+			const hash = await sendEth(
+				signer,
+				parseAddress(recipientAccount),
+				parseEther(amount),
+			);
 			setStatus(`Transaction confirmed! Hash: ${hash}`);
 			setRecipientAcount("");
 			setAmount("");
