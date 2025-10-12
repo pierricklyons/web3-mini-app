@@ -5,51 +5,72 @@ jest.mock("ethers", () => {
 	const original = jest.requireActual("ethers");
 	return {
 		...original,
-		Contract: jest.fn().mockImplementation(() => ({
-			balanceOf: jest.fn(),
-		})),
-		isAddress: jest.fn((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr)),
-		formatUnits: jest.fn((value) => (Number(value) / 1e18).toString()),
+		Contract: jest.fn(),
 	};
 });
 
-const mockProvider = {} as any;
-const validUser = "0x1111111111111111111111111111111111111111";
+const mockValidProvider = {} as any;
+const validUserAddress = "0x1111111111111111111111111111111111111111";
 const validToken = {
 	address: "0x2222222222222222222222222222222222222222",
 	symbol: "DAI",
 	decimals: 18,
 };
 
+const mockContract = Contract as unknown as jest.Mock;
+
 describe("getTokenBalance", () => {
-	it("returns the formatted balance", async () => {
-		(Contract as jest.Mock).mockImplementation(() => ({
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	it("throws if provider is missing", async () => {
+		await expect(
+			getTokenBalance(null as any, validUserAddress, validToken),
+		).rejects.toThrow(ERRORS.NO_PROVIDER);
+	});
+
+	it("throws if user address is invalid", async () => {
+		const invalidUserAddress = "invalid-user-address";
+		await expect(
+			getTokenBalance(mockValidProvider, invalidUserAddress, validToken),
+		).rejects.toThrow(ERRORS.INVALID_USER_ADDRESS(invalidUserAddress));
+	});
+
+	it("throws if token address is invalid", async () => {
+		const invalidToken = {
+			...validToken,
+			address: "invalid",
+		};
+		await expect(
+			getTokenBalance(mockValidProvider, validUserAddress, invalidToken),
+		).rejects.toThrow(ERRORS.INVALID_TOKEN_ADDRESS(invalidToken.address));
+	});
+
+	it("returns formatted token balance", async () => {
+		// mock a successful contract call
+		mockContract.mockImplementation(() => ({
 			balanceOf: jest
 				.fn()
 				.mockResolvedValue(BigInt("1000000000000000000")),
 		}));
 
 		const result = await getTokenBalance(
-			mockProvider,
-			validUser,
+			mockValidProvider,
+			validUserAddress,
 			validToken,
 		);
-		expect(result).toEqual({ symbol: "DAI", balance: "1" });
+
+		expect(result).toEqual({ symbol: "DAI", balance: "1.0" });
 	});
 
-	it("throws if provider is missing", async () => {
-		await expect(
-			getTokenBalance(null as any, validUser, validToken),
-		).rejects.toThrow(ERRORS.NO_PROVIDER);
-	});
-
-	it("throws if balanceOf fails", async () => {
-		(Contract as jest.Mock).mockImplementation(() => ({
-			balanceOf: jest.fn().mockRejectedValue(new Error("RPC Error")),
+	it("throws if RPC call fails", async () => {
+		mockContract.mockImplementation(() => ({
+			balanceOf: jest.fn().mockRejectedValue(new Error("RPC error")),
 		}));
 
 		await expect(
-			getTokenBalance(mockProvider, validUser, validToken),
-		).rejects.toThrow(ERRORS.BALANCE_FETCH_FAILED(validToken.symbol));
+			getTokenBalance(mockValidProvider, validUserAddress, validToken),
+		).rejects.toThrow(ERRORS.RPC_CALL_FAIL(validToken.symbol));
 	});
 });
