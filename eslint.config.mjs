@@ -18,11 +18,10 @@ const eslintConfig = [
 			"out/**",
 			"build/**",
 			"next-env.d.ts",
+			"**/*.test.ts",
+			"**/*.test.tsx",
 		],
-		rules: {
-			"@typescript-eslint/no-explicit-any": "error",
-			"@typescript-eslint/no-empty-object-type": "off",
-		},
+		rules: { "@typescript-eslint/no-empty-object-type": "off" },
 	},
 ];
 

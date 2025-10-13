@@ -1,7 +1,8 @@
-import { Address, parseAddress } from "@/types/Address";
+import { parseAddress } from "@/types/Address";
 import { getTokenBalance } from "./getTokenBalance";
 import { Contract } from "ethers";
 import { Token } from "@/types/Token";
+import { Provider } from "ethers";
 
 jest.mock("ethers", () => {
 	const original = jest.requireActual("ethers");
@@ -11,7 +12,7 @@ jest.mock("ethers", () => {
 	};
 });
 
-const mockProvider = {} as any;
+const mockProvider = {} as Provider;
 const mockUserAddress = parseAddress(
 	"0x1111111111111111111111111111111111111111",
 );
