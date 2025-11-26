@@ -1,13 +1,16 @@
 import { parseAddress } from "@/types/Address";
 import { sendEth } from "./sendEth";
 import { parseEther } from "ethers";
+import { Signer } from "ethers";
+
+const sendTransaction = jest.fn().mockResolvedValue({
+	hash: "0x123",
+	wait: jest.fn().mockResolvedValue(true),
+});
 
 const mockSigner = {
-	sendTransaction: jest.fn().mockResolvedValue({
-		hash: "0x123",
-		wait: jest.fn().mockResolvedValue(true),
-	}),
-} as any;
+	sendTransaction,
+} as unknown as Signer;
 const mockRecipientAddress = parseAddress(
 	"0x1111111111111111111111111111111111111111",
 );
@@ -20,9 +23,7 @@ describe("sendEth", () => {
 
 	it("Throws if signer.sendTransaction fails", async () => {
 		// Temporarily override sendTransaction to fail
-		mockSigner.sendTransaction.mockRejectedValueOnce(
-			new Error("RPC Error"),
-		);
+		sendTransaction.mockRejectedValueOnce(new Error("RPC Error"));
 
 		await expect(
 			sendEth(mockSigner, mockRecipientAddress, mockAmount),
